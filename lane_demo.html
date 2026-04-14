@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lane Demo</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: black;
+      width: 100vw;
+      height: 70vh;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 12px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="controls">
+    <button onclick="moveLeft()">⬅ Left</button>
+    <button onclick="resetLane()">Reset</button>
+    <button onclick="moveRight()">Right ➡</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let W, H;
+    let topShift = 0;
+    const step = 18;
+    const maxShift = 180;
+
+    function resizeCanvas() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = Math.floor(window.innerHeight * 0.7);
+      drawLane();
+    }
+
+    function drawLane() {
+      ctx.clearRect(0, 0, W, H);
+
+      const bottomY = H - 30;
+      const topY = 80;
+
+      const leftBottomX = W * 0.28;
+      const rightBottomX = W * 0.72;
+
+      const leftTopBase = W * 0.43;
+      const rightTopBase = W * 0.57;
+
+      const leftTopX = leftTopBase + topShift;
+      const rightTopX = rightTopBase + topShift;
+
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 6;
+
+      ctx.beginPath();
+      ctx.moveTo(leftBottomX, bottomY);
+      ctx.lineTo(leftTopX, topY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(rightBottomX, bottomY);
+      ctx.lineTo(rightTopX, topY);
+      ctx.stroke();
+    }
+
+    function moveLeft() {
+      topShift = Math.max(topShift - step, -maxShift);
+      drawLane();
+    }
+
+    function moveRight() {
+      topShift = Math.min(topShift + step, maxShift);
+      drawLane();
+    }
+
+    function resetLane() {
+      topShift = 0;
+      drawLane();
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+  </script>
+</body>
+</html>
